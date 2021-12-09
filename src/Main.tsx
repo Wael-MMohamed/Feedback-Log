@@ -1,9 +1,10 @@
 import { Container, Grid, Typography, Box, ButtonBase, ButtonGroup, Button, TextField } from '@material-ui/core'
 import { List, ListItem, ListItemText } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
-import { useContext, useState } from 'react';
-import { GlobalContext } from './app/GlobalState';
-import parse from 'html-react-parser';
+import React, { useState } from 'react';
+import { useCustomerList } from './app/GlobalState';
+import { v4 as uuidv4 } from 'uuid';
+import CustomrList from './components/CustomerList';
 
 const useStyles = makeStyles({
     root: {
@@ -20,10 +21,10 @@ const useStyles = makeStyles({
     }
 })
 
-const Main = () => {
+const Main :React.FC = () => {
 
     const classes = useStyles();
-    const { customerList, feedbackList, addNewCustomer, addNewFeedback } = useContext(GlobalContext);
+    const { state, dispatch } = useCustomerList();
     const [newCustomerName, setNewCustomerName] = useState('')
     const [toggleInput, setToggleInput] = useState(false)
     const [selectedIndex, setSelectedIndex] = useState(0)
@@ -31,13 +32,12 @@ const Main = () => {
     const [search, setSearch] = useState('');
     
 
-    const handleChange = (event) => {
+    const handleChange = (event : React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
         event.preventDefault()
-        event = event.target.value
-        setNewCustomerName(event)
+        setNewCustomerName(event.target.value)
     }
 
-    const showFeedback = (customerId) => {
+    const showFeedback = (customerId : number): void => {
         if(selectedIndex !== customerId){
             setSelectedIndex(customerId)
         }
@@ -45,22 +45,21 @@ const Main = () => {
 
     const saveName = () => {
         if(newCustomerName !== ''){
-            addNewCustomer(newCustomerName)
+            dispatch({type:"ADD_NEW_CUSTOMER",payload:{id: parseInt(uuidv4()), name: newCustomerName}})
             hideInput()
             setSelectedIndex(0)
         }
         
     }
 
-    const handleFeedbackChange = (event) => {
-        event.preventDefault()
-        event = event.target.value
-        setFeedbacks(event)
+    const handleFeedbackChange = (event  : React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
+        event.preventDefault();
+        setFeedbacks(event.target.value);
     }
 
-    const saveFeedback = (id) => {
+    const saveFeedback = (id: number) => {
         if(feedbacks !== ''){
-            addNewFeedback(id, feedbacks)
+            dispatch({type:"ADD_NEW_FEEDBACK", payload: { id,feedback:feedbacks}})
             setFeedbacks('')
         }
         
@@ -83,7 +82,7 @@ const Main = () => {
                 </ Typography>
                 <Grid container  spacing={1}>
                     <Grid className={classes.head} item xs={6}>
-                        <Typography flexGrow={1} variant='h5'>
+                        <Typography  variant='h5'>
                             Customers
                         </Typography>
                         <ButtonBase>
@@ -129,11 +128,13 @@ const Main = () => {
                                     />
                                 </ListItem>
                             )}
-                            {customerList.map((item) => {
-                                return (<ListItem button key={item.id} selected={selectedIndex === item.id} onClick={() => showFeedback(item.id)}>
-                                            <ListItemText primary={item.name} />
-                                        </ListItem>)
+                            {state.map((item) => {
+                                return (item.id === 0 ?  null : <ListItem button key={item.id} selected={selectedIndex === item.id} onClick={() => showFeedback(item.id)}>
+                                                                    <ListItemText primary={item.name} />
+                                                                </ListItem>)
                             })}
+                            
+
                         </List>
                     </Grid>
                         <Grid className={classes.boxs} item xs={6}>
@@ -151,14 +152,16 @@ const Main = () => {
                                             <Button onClick={() => saveFeedback(selectedIndex)}>save</Button>
                                         </ButtonGroup>
                                     </ListItem>
-                                    {feedbackList.filter(item => item.customer_id === selectedIndex && item.feedback.includes(search)).map((item) => {
-                                        return(
-                                            <ListItem button key={item.id}>
-                                                <ListItemText primary={parse(item.feedback.replace(search, `<mark>${search}</mark>`))}/>
-                                                {/* {parse(item.feedback.replaceAll(search, `<mark>${search}</mark>`))} */}
+                                    {
+                                        state.find(item => item.id === selectedIndex)?.feedback.map(feed => (
+                                            <ListItem button key={feed}>
+                                                <ListItemText primary={feed}/>
                                             </ListItem>
-                                        )
-                                    })}
+                                        ))
+                                    }
+                                    
+                                    
+                                    
                                 </List>)
                             }
                         </Grid>
