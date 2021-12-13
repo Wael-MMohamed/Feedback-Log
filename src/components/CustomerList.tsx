@@ -1,46 +1,69 @@
-import React from "react";
-import { useCustomerList } from './app/GlobalState';
+import React, { useState } from "react";
 import { v4 as uuidv4 } from 'uuid';
+import { useCustomerList } from '../app/GlobalState';
 
 
 
 type Props = {
-    customers : string[]
+    toggleInput : boolean
+    selectedIndex : number
+    hideInput() : void
+    showFeedback(id: number) : void
 }
+
 
 const CustomrList = (props : Props) => {
 
     const { state, dispatch } = useCustomerList();
+    const [newCustomerName, setNewCustomerName] = useState('')
+
+    const handleChange = (event : React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
+        event.preventDefault()
+        setNewCustomerName(event.target.value)
+    }
+
+    const saveName = () => {
+        if(newCustomerName !== ''){
+            dispatch({type:"ADD_NEW_CUSTOMER",payload:{id: parseInt(uuidv4()), name: newCustomerName, feedback: ''}})
+            props.hideInput()
+            // setSelectedIndex(0)
+        }
+        
+    }
+
 
 
     return (
         <div>
-            this is the customer list
             <ul>
-                {toggleInput === false ? null : 
+                {props.toggleInput === false ? null : 
                 (
-                    <ListItem className={classes.head}>
-                        <TextField 
-                            id="standard-basic" 
+                    <li>
+                        <input 
+                            className="input" 
                             type='text'
                             placeholder="Add customer name"
                             value={newCustomerName}
                             onChange={handleChange}
-                            onBlur={hideInput}
+                            onBlur={props.hideInput}
                             onKeyUp={(e) => {
                                 if(e.key === "Enter")
                                     saveName()
                                 if(e.key === "Escape")
-                                    hideInput()
+                                    props.hideInput()
                             }}
                         />
-                    </ListItem>
+                    </li>
                 )}
+            
                 {state.map((item) => {
-                    return (item.id === 0 ?  null : <ListItem button key={item.id} selected={selectedIndex === item.id} onClick={() => showFeedback(item.id)}>
-                                                        <ListItemText primary={item.name} />
-                                                    </ListItem>)
-                })}
+                    return (item.id === 0 ?  null : <li  key={item.id} 
+                                                        // selected={props.selectedIndex === item.id} 
+                                                        onClick={() => props.showFeedback(item.id)}
+                                                    >
+                                                        {item.name}
+                                                    </li>)
+                })} 
             </ul>
         </div>
     )
