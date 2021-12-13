@@ -34,7 +34,7 @@ const CustomrList = (props : Props) => {
 
 
     return (
-        <div>
+        <div className="customer-list">
             <ul>
                 {props.toggleInput === false ? null : 
                 (

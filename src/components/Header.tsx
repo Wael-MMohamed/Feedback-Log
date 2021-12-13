@@ -21,7 +21,7 @@ const Header = (props : Props) => {
                     </div>
                     <div className="sub">
                         <div>
-                            <button className="add-btn" onClick={props.showInput} > add new </button>
+                            <button className="btn" onClick={props.showInput} > add new </button>
                         </div>
                         <div>
                             <h5 className="titles">Feedback</h5>
@@ -32,7 +32,7 @@ const Header = (props : Props) => {
                     
                     <div>
                         <input
-                        className="search-input"
+                        className="input"
                         type='text'
                         placeholder="search feedback"
                         value={props.search}

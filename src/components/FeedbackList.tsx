@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useCustomerList } from '../app/GlobalState';
+import parse from 'html-react-parser';
 
 type Props = {
     selectedIndex : number
@@ -27,26 +28,26 @@ const FeedbackList = (props: Props) => {
     const { state, dispatch } = useCustomerList();
 
     return (
-        <div>       
-            {props.selectedIndex === 0 ? (<h3>Select a customer to show feedback</h3>):
+        <div className='feedback-list'>       
+            {props.selectedIndex === 0 ? (<p>Select a customer to show feedback</p>):
                                 (<ul>
                                     <li>
                                         <input 
-                                            id="standard-basic" 
+                                            className='input'
                                             type='text'
                                             placeholder="Add feedback name"
                                             value={feedbacks}
                                             onChange={handleFeedbackChange}
                                         />
                                         
-                                            <button onClick={() => saveFeedback(props.selectedIndex)}>save</button>
+                                            <button className='btn' onClick={() => saveFeedback(props.selectedIndex)}>save</button>
                                         
                                     </li>
                                     {
                                         state.find(item => item.id === props.selectedIndex)?.feedback.filter(text => text.includes(props.search)).map((feed,index) => (
                                             feed === '' ? null :
                                             (<li key={index}>
-                                                <p>{props.search === '' ? feed : (feed.replaceAll(props.search, `<mark>${props.search}</mark>`))}</p>
+                                                <p>{props.search === '' ? feed : parse(feed.replaceAll(props.search, `<mark>${props.search}</mark>`))}</p>
                                             </li>)
                                         ))
                                     }
