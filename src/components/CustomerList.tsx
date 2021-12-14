@@ -6,9 +6,10 @@ import { useCustomerList } from '../app/GlobalState';
 
 type Props = {
     toggleInput : boolean
-    selectedIndex : number
+    selectedIndex : string
     hideInput() : void
-    showFeedback(id: number) : void
+    showFeedback(id: string) : void
+    setSelectedIndex(id : string) : void
 }
 
 
@@ -24,9 +25,10 @@ const CustomrList = (props : Props) => {
 
     const saveName = () => {
         if(newCustomerName !== ''){
-            dispatch({type:"ADD_NEW_CUSTOMER",payload:{id: parseInt(uuidv4()), name: newCustomerName, feedback: ''}})
+            dispatch({type:"ADD_NEW_CUSTOMER",payload:{id: uuidv4(), name: newCustomerName, feedback: ''}})
             props.hideInput()
-            // setSelectedIndex(0)
+            props.setSelectedIndex('0')
+            setNewCustomerName('')
         }
         
     }
@@ -45,20 +47,26 @@ const CustomrList = (props : Props) => {
                             placeholder="Add customer name"
                             value={newCustomerName}
                             onChange={handleChange}
-                            onBlur={props.hideInput}
+                            onBlur={() => 
+                                {setNewCustomerName('');
+                                props.hideInput()}
+                                
+                            }
                             onKeyUp={(e) => {
                                 if(e.key === "Enter")
                                     saveName()
-                                if(e.key === "Escape")
+                                if(e.key === "Escape"){
                                     props.hideInput()
+                                    setNewCustomerName('');
+                                }
                             }}
                         />
                     </li>
                 )}
             
                 {state.map((item) => {
-                    return (item.id === 0 ?  null : <li  key={item.id} 
-                                                        // selected={props.selectedIndex === item.id} 
+                    return (item.id === '0' ?  null : <li  key={item.id} 
+                                                        className={props.selectedIndex === item.id ? 'shaded' : 'none'}
                                                         onClick={() => props.showFeedback(item.id)}
                                                     >
                                                         {item.name}

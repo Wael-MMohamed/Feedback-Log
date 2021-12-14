@@ -3,7 +3,7 @@ import { useCustomerList } from '../app/GlobalState';
 import parse from 'html-react-parser';
 
 type Props = {
-    selectedIndex : number
+    selectedIndex : string
     search: string
 }
 
@@ -17,7 +17,7 @@ const FeedbackList = (props: Props) => {
         setFeedbacks(event.target.value);
     }
 
-    const saveFeedback = (id: number) => {
+    const saveFeedback = (id: string) => {
         if(feedbacks !== ''){
             dispatch({type:"ADD_NEW_FEEDBACK", payload: { id,name:'',feedback:feedbacks}})
             setFeedbacks('')
@@ -29,7 +29,7 @@ const FeedbackList = (props: Props) => {
 
     return (
         <div className='feedback-list'>       
-            {props.selectedIndex === 0 ? (<p>Select a customer to show feedback</p>):
+            {props.selectedIndex === '0' ? (<p>Select a customer to show feedback</p>):
                                 (<ul>
                                     <li>
                                         <input 
@@ -47,7 +47,7 @@ const FeedbackList = (props: Props) => {
                                         state.find(item => item.id === props.selectedIndex)?.feedback.filter(text => text.includes(props.search)).map((feed,index) => (
                                             feed === '' ? null :
                                             (<li key={index}>
-                                                <p>{props.search === '' ? feed : parse(feed.replaceAll(props.search, `<mark>${props.search}</mark>`))}</p>
+                                                {props.search === '' ? feed : parse(feed.replaceAll(props.search, `<mark>${props.search}</mark>`))}
                                             </li>)
                                         ))
                                     }

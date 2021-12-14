@@ -15,21 +15,20 @@ const Header = (props : Props) => {
             </div>
             
             <div className="controls">
-               
+                <div className="sub">
                     <div>
                         <h5 className="titles">Customers</h5>
                     </div>
-                    <div className="sub">
-                        <div>
-                            <button className="btn" onClick={props.showInput} > add new </button>
-                        </div>
-                        <div>
-                            <h5 className="titles">Feedback</h5>
-                        </div>
-                   
-                        
-                    </div>   
                     
+                    <div>
+                        <button className="btn" onClick={props.showInput} > add new </button>
+                    </div>
+                </div>
+                <div className="sub">
+                    <div>
+                        <h5 className="titles">Feedback</h5>
+                    </div>
+                        
                     <div>
                         <input
                         className="input"
@@ -39,7 +38,7 @@ const Header = (props : Props) => {
                         onChange={(data : React.ChangeEvent<HTMLInputElement>) => props.setSearch(data.target.value)} 
                         />
                     </div> 
-               
+                </div>
                 
                 
             </div>

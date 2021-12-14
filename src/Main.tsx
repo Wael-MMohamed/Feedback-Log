@@ -7,12 +7,12 @@ import Header from './components/Header';
 const Main :React.FC = () => {
 
     const [toggleInput, setToggleInput] = useState(false)
-    const [selectedIndex, setSelectedIndex] = useState(0)
+    const [selectedIndex, setSelectedIndex] = useState('0')
     const [search, setSearch] = useState('');
     
 
 
-    const showFeedback = (customerId : number): void => {
+    const showFeedback = (customerId : string): void => {
         if(selectedIndex !== customerId){
             setSelectedIndex(customerId)
         }
@@ -36,7 +36,7 @@ const Main :React.FC = () => {
 
                 <div className='lists'>
                            
-                    <CustomrList toggleInput={toggleInput} hideInput={hideInput} selectedIndex={selectedIndex} showFeedback={showFeedback}/>
+                    <CustomrList toggleInput={toggleInput} hideInput={hideInput} selectedIndex={selectedIndex} setSelectedIndex={setSelectedIndex} showFeedback={showFeedback}/>
                             
 
                     <FeedbackList selectedIndex={selectedIndex} search={search} />

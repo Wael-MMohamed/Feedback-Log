@@ -2,23 +2,25 @@ import React, { createContext, ReactNode, useContext, useReducer } from "react";
 
 
 export type State = {
-        id: number,
+        id: string,
         name: string,
         feedback: string[]
     }[]
 
 
-const defaultState: State = [{id: 0, name: '', feedback: ['']}]; 
+const defaultState: State = [{id: '0', name: '', feedback: ['']}]; 
 
 
 export type Action = {
     type: "ADD_NEW_CUSTOMER" | "ADD_NEW_FEEDBACK"
-    payload: {id: number, name: string, feedback: string }
+    payload: {id: string, name: string, feedback: string }
 }
 
 type Dispatch = (action : Action) => void
 
-const updateFeedback = (id: number,feedback: string, state : State): State =>{
+
+//Helper function to add new feedback to selected customer feedback arry
+const updateFeedback = (id: string,feedback: string, state : State): State =>{
     const index : number = state.findIndex(item => item.id === id);
     if(state[index].feedback){
     state[index].feedback.push(feedback)
